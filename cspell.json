@@ -1,0 +1,15 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "infracost",
+    "finops",
+    "CloudFormation",
+    "Bitbucket",
+    "GitLab"
+  ],
+  "ignorePaths": [
+    "dist",
+    "node_modules"
+  ]
+}

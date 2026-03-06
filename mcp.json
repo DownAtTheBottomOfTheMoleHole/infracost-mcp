@@ -1,0 +1,54 @@
+{
+  "name": "infracost",
+  "registry_name": "DownAtTheBottomOfTheMoleHole/infracost-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Infracost CLI integration",
+  "author": "Carl Dawson",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp"
+  },
+  "homepage": "https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp",
+  "keywords": [
+    "mcp",
+    "infracost",
+    "cloud-cost",
+    "finops",
+    "terraform",
+    "iac"
+  ],
+  "entry": "dist/index.js",
+  "transport": "stdio",
+  "tools": [
+    {
+      "name": "infracost_breakdown",
+      "description": "Generate cost breakdown for Infrastructure as Code (Terraform, CloudFormation, etc.)"
+    },
+    {
+      "name": "infracost_diff",
+      "description": "Show cost diff between current IaC and planned changes"
+    },
+    {
+      "name": "infracost_output",
+      "description": "Format Infracost JSON output to different formats (table, html, comments, etc.)"
+    },
+    {
+      "name": "infracost_comment",
+      "description": "Post cost estimate comments to pull requests (GitHub, GitLab, Azure Repos, Bitbucket)"
+    },
+    {
+      "name": "infracost_upload",
+      "description": "Upload Infracost JSON to Infracost Cloud for centralized visibility"
+    },
+    {
+      "name": "infracost_configure",
+      "description": "Get or set Infracost configuration options"
+    },
+    {
+      "name": "infracost_auth",
+      "description": "Authenticate with Infracost Cloud"
+    }
+  ],
+  "nodejs": ">=24.0.0"
+}

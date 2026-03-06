@@ -1,0 +1,11 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^https://registry.modelcontextprotocol.io"
+    }
+  ],
+  "timeout": "20s",
+  "retryOn429": true,
+  "retryCount": 2,
+  "fallbackRetryDelay": "3s"
+}
