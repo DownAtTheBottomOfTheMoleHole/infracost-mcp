@@ -1,35 +1,57 @@
 # Contributing
 
-Thanks for contributing to `infracost-mcp`.
+Thank you for contributing to this project.
 
-## Development setup
+## Before You Start
 
-1. Install Node.js 24+.
-2. Install dependencies:
+- Read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- Search existing issues before opening a new one
+- Keep pull requests focused and small where possible
+
+## Prerequisites
+
+- Node.js `>=24.0.0`
+- npm
+- Infracost CLI installed and configured (see [installation guide](https://www.infracost.io/docs/#installation))
+
+## Local Setup
 
 ```bash
+git clone https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp.git
+cd infracost-mcp
 npm install
-```
-
-3. Build project:
-
-```bash
 npm run build
 ```
 
-## Quality checks
+## Development Standards
 
-Before opening a pull request, run:
+- Use TypeScript and existing project conventions
+- Keep changes scoped to the requested task
+- Update relevant documentation when behaviour changes
+- Use clear commit messages (Conventional Commit style is preferred)
+
+## Validation Checklist
+
+Run before opening a pull request:
 
 ```bash
-npm run lint
+npm run check
+npm run build
 npm run test
-npm run build
+npm run lint
+npm audit --production
 ```
 
-## Pull request guidelines
+## Pull Request Process
 
-- Keep changes focused and small.
-- Add or update tests when behavior changes.
-- Update documentation when adding or changing tools.
-- Ensure lint and tests pass.
+1. Create a feature branch.
+2. Implement and validate your changes.
+3. Open a pull request using the provided template.
+4. Ensure all CI checks pass.
+5. Address review feedback and merge when approved.
+
+## Security Reporting
+
+For vulnerabilities, do not open a public issue.
+
+Follow the process in [SECURITY.md](./SECURITY.md).
