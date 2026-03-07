@@ -1,6 +1,6 @@
 {
   "servers": {
-    "infracost": {
+    "infracost-cost-analyzer": {
       "type": "stdio",
       "command": "node",
       "args": ["./dist/index.js"]
