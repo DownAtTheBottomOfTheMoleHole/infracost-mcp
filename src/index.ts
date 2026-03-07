@@ -12,6 +12,8 @@ import {
 import {
   type ToolArgs,
   formatOutput,
+  generateUsageFile,
+  generateUsageGuidance,
   readBool,
   readNumber,
   readString,
@@ -691,6 +693,57 @@ async function handleAuthTool(args: ToolArgs) {
   };
 }
 
+async function handleGenerateUsageTool(args: ToolArgs) {
+  // Get resource types (required)
+  const resourceTypes = readStringArray(args, "resourceTypes");
+  if (resourceTypes.length === 0) {
+    return {
+      content: [
+        {
+          type: "text",
+          text: "Error: 'resourceTypes' parameter is required for infracost_generate_usage",
+        },
+      ],
+      isError: true,
+    };
+  }
+
+  // Get optional output file path
+  const outputFilePath = readString(args, "outputFilePath");
+
+  // Generate the usage file
+  const usageData = generateUsageFile(resourceTypes);
+  const usageJson = JSON.stringify(usageData, null, 2);
+
+  // Generate guidance
+  const guidance = generateUsageGuidance(resourceTypes, outputFilePath);
+
+  // Include format preference
+  const includeGuidance = readBool(args, "includeGuidance", true);
+  const onlyJson = readBool(args, "onlyJson", false);
+
+  let responseText: string;
+  if (onlyJson) {
+    responseText = usageJson;
+  } else if (includeGuidance) {
+    responseText = [
+      "Raw JSON for usage file:",
+      "```json",
+      usageJson,
+      "```",
+      "",
+      guidance,
+    ].join("\n");
+  } else {
+    responseText = usageJson;
+  }
+
+  return {
+    content: [{ type: "text", text: responseText }],
+    isError: false,
+  };
+}
+
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
@@ -1051,6 +1104,39 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           additionalProperties: false,
         },
       },
+      {
+        name: "infracost_generate_usage",
+        description:
+          "Generate Infracost usage file with sensible defaults for specified resource types. Complements infracost_configure by providing pre-filled templates.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            resourceTypes: {
+              type: "array",
+              description:
+                "Resource types to include in usage file (e.g., [\"aws_lambda_function\", \"aws_s3_bucket\"]). Required.",
+              items: { type: "string" },
+            },
+            outputFilePath: {
+              type: "string",
+              description: "Optional path where the usage file should be saved (for guidance only).",
+            },
+            includeGuidance: {
+              type: "boolean",
+              description:
+                "Include formatted guidance on how to use the generated file. Default: true.",
+              default: true,
+            },
+            onlyJson: {
+              type: "boolean",
+              description: "Return only the raw JSON (no guidance). Overrides includeGuidance. Default: false.",
+              default: false,
+            },
+          },
+          required: ["resourceTypes"],
+          additionalProperties: false,
+        },
+      },
     ],
   };
 });
@@ -1084,6 +1170,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   if (request.params.name === "infracost_auth") {
     return handleAuthTool(args);
+  }
+
+  if (request.params.name === "infracost_generate_usage") {
+    return handleGenerateUsageTool(args);
   }
 
   return {

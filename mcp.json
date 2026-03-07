@@ -48,6 +48,10 @@
     {
       "name": "infracost_auth",
       "description": "Authenticate with Infracost Cloud"
+    },
+    {
+      "name": "infracost_generate_usage",
+      "description": "Generate Infracost usage file with sensible defaults for resource types"
     }
   ],
   "nodejs": ">=24.0.0"

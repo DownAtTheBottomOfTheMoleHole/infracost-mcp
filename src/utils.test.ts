@@ -2,6 +2,8 @@ import process from "node:process";
 import { afterEach, describe, expect, it } from "vitest";
 import {
   formatOutput,
+  generateUsageFile,
+  generateUsageGuidance,
   readBool,
   readNumber,
   readString,
@@ -65,5 +67,41 @@ describe("utils", () => {
 
     process.env.INFRACOST_BINARY_PATH = "/usr/local/bin/infracost-custom";
     expect(resolveInfracostCommand()).toBe("/usr/local/bin/infracost-custom");
+  });
+
+  it("generateUsageFile creates defaults for specified resource types", () => {
+    const usage = generateUsageFile([
+      "aws_lambda_function",
+      "aws_s3_bucket",
+      "unknown_resource",
+    ]);
+
+    expect(usage).toHaveProperty("aws_lambda_function");
+    expect(usage["aws_lambda_function"]).toHaveProperty("monthly_requests", 1_000_000);
+    expect(usage).toHaveProperty("aws_s3_bucket");
+    expect(usage["aws_s3_bucket"]).toHaveProperty("storage_gb", 500);
+    expect(usage).not.toHaveProperty("unknown_resource");
+  });
+
+  it("generateUsageGuidance produces formatted guidance text", () => {
+    const guidance = generateUsageGuidance(
+      ["aws_lambda_function", "aws_s3_bucket"],
+      "./infracost-usage.json",
+    );
+
+    expect(guidance).toContain("Generated Infracost Usage File");
+    expect(guidance).toContain("aws_lambda_function");
+    expect(guidance).toContain("aws_s3_bucket");
+    expect(guidance).toContain("./infracost-usage.json");
+    expect(guidance).toContain("infracost breakdown");
+    expect(guidance).toContain("infracost diff");
+    expect(guidance).toContain("monthly_requests");
+    expect(guidance).toContain("storage_gb");
+  });
+
+  it("generateUsageGuidance handles empty resource types", () => {
+    const guidance = generateUsageGuidance([]);
+
+    expect(guidance).toContain("0 resource type");
   });
 });
