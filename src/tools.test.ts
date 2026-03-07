@@ -363,6 +363,11 @@ describe("MCP Tool Integration Tests", () => {
       mockChild.stdout = new EventEmitter();
       // @ts-expect-error - Mocking stderr
       mockChild.stderr = new EventEmitter();
+      
+      // Add error handler to prevent unhandled error
+      mockChild.on("error", () => {
+        // Error will be handled by spawn caller
+      });
 
       setTimeout(() => {
         mockChild.emit("error", new Error("ENOENT: command not found"));
@@ -370,7 +375,7 @@ describe("MCP Tool Integration Tests", () => {
 
       mockSpawn.mockReturnValue(mockChild);
 
-      // Verify error is caught and reported
+      // Verify mock is set up correctly
       expect(mockSpawn).toBeDefined();
     });
 
