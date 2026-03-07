@@ -72,7 +72,11 @@ jobs:
     needs: test-and-build
     name: Publish npm and MCP
     # Only run publish on PR merges to main or manual workflow dispatch
-    if: (github.event.pull_request.merged == true && github.base_ref == 'main') || github.event_name == 'workflow_dispatch'
+    if: |
+      (github.event_name == 'pull_request' && 
+       github.event.pull_request.merged == true && 
+       github.base_ref == 'main') ||
+      github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout
@@ -87,6 +91,11 @@ jobs:
           node-version: 24.x
           registry-url: https://registry.npmjs.org
           cache: npm
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
       - name: Resolve release version
         id: release_version
