@@ -4,3 +4,9 @@ coverage/
 .env
 .DS_Store
 *.log
+
+# Local development files (not for public repo)
+.copilot-instructions.md
+.github/copilot-instructions.md
+*.instructions.md
+.vscode/settings.json
