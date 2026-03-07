@@ -2,8 +2,9 @@
 
 <!-- mcp-name: io.github.downatthebottomofthemolehole/infracost -->
 
-[![CI Status](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml/badge.svg?branch=main)](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml)
-[![Release Status](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml/badge.svg?branch=main)](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml)
+[![CI/Publish](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml/badge.svg)](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml)
+[![Coverage](https://codecov.io/gh/DownAtTheBottomOfTheMoleHole/infracost-mcp/branch/main/graph/badge.svg)](https://codecov.io/gh/DownAtTheBottomOfTheMoleHole/infracost-mcp)
+[![npm](https://img.shields.io/npm/v/@downatthebottomofthemolehole/infracost-mcp-server.svg)](https://www.npmjs.com/package/@downatthebottomofthemolehole/infracost-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D24.0.0-brightgreen)](https://nodejs.org/)
 
