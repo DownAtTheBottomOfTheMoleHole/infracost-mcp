@@ -8,7 +8,6 @@ permissions:
   contents: read
   pull-requests: write
   issues: write
-  issues: write
 
 jobs:
   label:
@@ -38,11 +37,11 @@ jobs:
               const typeToLabel = {
                 feat: 'feature',
                 fix: 'bugfix',
-                perf: 'performance',
+                perf: 'maintenance',
                 docs: 'documentation',
-                style: 'style',
-                refactor: 'refactor',
-                test: 'tests',
+                style: 'maintenance',
+                refactor: 'maintenance',
+                test: 'test',
                 chore: 'maintenance'
               };
 

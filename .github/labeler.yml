@@ -27,7 +27,7 @@ documentation:
           - '.github/ISSUE_TEMPLATE/**'
           - '.github/pull_request_template.md'
 
-tests:
+test:
   - changed-files:
       - any-glob-to-any-file:
           - 'src/**/*.test.ts'
