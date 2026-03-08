@@ -39,8 +39,8 @@ jobs:
                 fix: 'bugfix',
                 perf: 'maintenance',
                 docs: 'documentation',
-                style: 'maintenance',
-                refactor: 'maintenance',
+                style: 'style',
+                refactor: 'refactor',
                 test: 'test',
                 chore: 'maintenance'
               };
