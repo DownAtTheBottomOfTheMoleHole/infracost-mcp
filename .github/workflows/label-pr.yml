@@ -1,14 +1,13 @@
 name: Label PRs
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
   pull_request_target:
     types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
   pull-requests: write
+  issues: write
 
 jobs:
   label:
@@ -33,16 +32,33 @@ jobs:
             const title = context.payload.pull_request.title;
             const labels = [];
 
-            // Parse conventional commit types
-            if (title.startsWith('feat')) labels.push('feature');
-            if (title.startsWith('fix')) labels.push('bugfix');
-            if (title.startsWith('perf')) labels.push('performance');
-            if (title.startsWith('docs')) labels.push('documentation');
-            if (title.startsWith('style')) labels.push('style');
-            if (title.startsWith('refactor')) labels.push('refactor');
-            if (title.startsWith('test')) labels.push('tests');
-            if (title.startsWith('chore')) labels.push('maintenance');
-            if (title.includes('!:')) labels.push('breaking-change');
+            // Parse conventional commit types (type[optional scope][!]: ...)
+            const conventionalCommitMatch = title.match(/^(feat|fix|perf|docs|style|refactor|test|chore)(\(.+\))?(!)?:/);
+
+            if (conventionalCommitMatch) {
+              const type = conventionalCommitMatch[1];
+              const isBreakingChange = !!conventionalCommitMatch[3];
+
+              const typeToLabel = {
+                feat: 'feature',
+                fix: 'bugfix',
+                perf: 'performance',
+                docs: 'documentation',
+                style: 'style',
+                refactor: 'refactor',
+                test: 'tests',
+                chore: 'maintenance'
+              };
+
+              const label = typeToLabel[type];
+              if (label) {
+                labels.push(label);
+              }
+
+              if (isBreakingChange) {
+                labels.push('breaking-change');
+              }
+            }
 
             if (labels.length > 0) {
               await github.rest.issues.addLabels({
