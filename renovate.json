@@ -100,15 +100,6 @@
         "after 10pm on Sunday",
         "after 10pm on Wednesday"
       ]
-    },
-    {
-      "description": "Label dependencies by source",
-      "matchDatasources": [
-        "npm"
-      ],
-      "labels": [
-        "dependencies"
-      ]
     }
   ],
   "postUpdateOptions": [
