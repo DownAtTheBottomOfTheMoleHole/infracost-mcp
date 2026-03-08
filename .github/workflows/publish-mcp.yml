@@ -95,7 +95,6 @@ jobs:
         id: release_check
         run: |
           VERSION="${{ steps.gitversion.outputs.majorMinorPatch }}"
-          CURRENT_VERSION="$(node -p "require('./package.json').version")"
 
           if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "::error::Computed version '$VERSION' is not strict SemVer (x.y.z)."
@@ -103,13 +102,6 @@ jobs:
           fi
 
           echo "computed_version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "current_version=$CURRENT_VERSION" >> "$GITHUB_OUTPUT"
-
-          if [[ "$VERSION" == "$CURRENT_VERSION" ]]; then
-            echo "should_release=false" >> "$GITHUB_OUTPUT"
-            echo "reason=version-unchanged" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
 
           if git ls-remote --tags origin "refs/tags/v$VERSION" | grep -q "refs/tags/v$VERSION$"; then
             echo "should_release=false" >> "$GITHUB_OUTPUT"
@@ -120,39 +112,10 @@ jobs:
           echo "should_release=true" >> "$GITHUB_OUTPUT"
           echo "reason=release-required" >> "$GITHUB_OUTPUT"
 
-      - name: Update version files
-        if: steps.release_check.outputs.should_release == 'true'
-        env:
-          VERSION: ${{ steps.release_check.outputs.computed_version }}
-        run: |
-          npm version "$VERSION" --no-git-tag-version --allow-same-version
-          node -e "const fs = require('fs'); const p = 'server.json'; const data = JSON.parse(fs.readFileSync(p, 'utf8')); data.version = process.env.VERSION; if (Array.isArray(data.packages)) { data.packages = data.packages.map((pkg) => ({ ...pkg, version: process.env.VERSION })); } fs.writeFileSync(p, JSON.stringify(data, null, 2) + '\n');"
-          node -e "const fs = require('fs'); const p = 'mcp.json'; const data = JSON.parse(fs.readFileSync(p, 'utf8')); data.version = process.env.VERSION; fs.writeFileSync(p, JSON.stringify(data, null, 2) + '\n');"
-
-      - name: Commit version bump
-        if: steps.release_check.outputs.should_release == 'true'
-        env:
-          VERSION: ${{ steps.release_check.outputs.computed_version }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package.json package-lock.json server.json mcp.json
-          git commit -m "chore(release): v$VERSION"
-
-      - name: Push release commit and tag
-        if: steps.release_check.outputs.should_release == 'true'
-        env:
-          VERSION: ${{ steps.release_check.outputs.computed_version }}
-        run: |
-          git tag "v$VERSION"
-          git push origin HEAD:main
-          git push origin "v$VERSION"
-
       - name: Release skipped summary
         if: steps.release_check.outputs.should_release != 'true'
         run: |
           echo "ℹ️ Release skipped: ${{ steps.release_check.outputs.reason }}"
-          echo "Current version: ${{ steps.release_check.outputs.current_version }}"
           echo "Computed version: ${{ steps.release_check.outputs.computed_version }}"
 
   test-and-build:
@@ -182,7 +145,15 @@ jobs:
       - name: Check documentation links
         run: npx --yes markdown-link-check -c .markdown-link-check.json README.md docs/*.md -q
       - run: npm run lint
-      - run: npm test
+      - run: npm run test:coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+          verbose: true
+
       - run: npm run build
 
       - name: Verify build artifacts

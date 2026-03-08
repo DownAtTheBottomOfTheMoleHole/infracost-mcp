@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
@@ -89,6 +90,47 @@ async function runCommand(
       });
     });
   });
+}
+
+const AUTO_REPORT_PATH_CANDIDATES = [
+  "infracost-diff.json",
+  "infracost-base.json",
+  "infracost.json",
+  ".infracost/infracost-diff.json",
+  ".infracost/infracost-base.json",
+  ".infracost/infracost.json",
+];
+
+function resolveReportPath(
+  args: ToolArgs,
+  workingDirectory: string,
+): string | undefined {
+  const explicitPath = readString(args, "path");
+  if (explicitPath) {
+    return explicitPath;
+  }
+
+  for (const candidate of AUTO_REPORT_PATH_CANDIDATES) {
+    if (existsSync(path.resolve(workingDirectory, candidate))) {
+      return candidate;
+    }
+  }
+
+  return undefined;
+}
+
+function missingReportPathError(toolName: string) {
+  return {
+    content: [
+      {
+        type: "text",
+        text:
+          `Error: no Infracost JSON report found for ${toolName}. ` +
+          "Pass 'path', or generate a report first using infracost_breakdown or infracost_diff.",
+      },
+    ],
+    isError: true,
+  };
 }
 
 async function handleBreakdownTool(args: ToolArgs) {
@@ -316,15 +358,10 @@ async function handleOutputTool(args: ToolArgs) {
 
   const commandArgs: string[] = ["output"];
 
-  // Path to Infracost JSON file (required)
-  const pathArg = readString(args, "path");
+  // Path to Infracost JSON file (auto-detected when omitted)
+  const pathArg = resolveReportPath(args, workingDirectory);
   if (!pathArg) {
-    return {
-      content: [
-        { type: "text", text: "Error: 'path' parameter is required for infracost_output" },
-      ],
-      isError: true,
-    };
+    return missingReportPathError("infracost_output");
   }
   commandArgs.push("--path", pathArg);
 
@@ -398,21 +435,14 @@ async function handleCommentTool(args: ToolArgs) {
 
   const commandArgs: string[] = ["comment"];
 
-  // Platform (github, gitlab, azure-repos, bitbucket, etc.)
-  const platform = readString(args, "platform");
-  if (platform) {
-    commandArgs.push(platform);
-  }
+  // Platform defaults to GitHub for shorter prompts.
+  const platform = readString(args, "platform") ?? "github";
+  commandArgs.push(platform);
 
-  // Path to Infracost JSON file (required)
-  const pathArg = readString(args, "path");
+  // Path to Infracost JSON file (auto-detected when omitted)
+  const pathArg = resolveReportPath(args, workingDirectory);
   if (!pathArg) {
-    return {
-      content: [
-        { type: "text", text: "Error: 'path' parameter is required for infracost_comment" },
-      ],
-      isError: true,
-    };
+    return missingReportPathError("infracost_comment");
   }
   commandArgs.push("--path", pathArg);
 
@@ -512,15 +542,10 @@ async function handleUploadTool(args: ToolArgs) {
 
   const commandArgs: string[] = ["upload"];
 
-  // Path to Infracost JSON file (required)
-  const pathArg = readString(args, "path");
+  // Path to Infracost JSON file (auto-detected when omitted)
+  const pathArg = resolveReportPath(args, workingDirectory);
   if (!pathArg) {
-    return {
-      content: [
-        { type: "text", text: "Error: 'path' parameter is required for infracost_upload" },
-      ],
-      isError: true,
-    };
+    return missingReportPathError("infracost_upload");
   }
   commandArgs.push("--path", pathArg);
 
@@ -901,7 +926,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             path: {
               type: "string",
-              description: "Path to Infracost JSON file (required).",
+              description:
+                "Path to Infracost JSON file. Optional; auto-detected from common filenames when omitted.",
             },
             format: {
               type: "string",
@@ -933,7 +959,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               items: { type: "string" },
             },
           },
-          required: ["path"],
           additionalProperties: false,
         },
       },
@@ -951,10 +976,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             platform: {
               type: "string",
               description: "Platform: github, gitlab, azure-repos, or bitbucket.",
+              default: "github",
             },
             path: {
               type: "string",
-              description: "Path to Infracost JSON file (required).",
+              description:
+                "Path to Infracost JSON file. Optional; auto-detected from common filenames when omitted.",
             },
             repo: {
               type: "string",
@@ -1000,7 +1027,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               items: { type: "string" },
             },
           },
-          required: ["path"],
           additionalProperties: false,
         },
       },
@@ -1017,7 +1043,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             path: {
               type: "string",
-              description: "Path to Infracost JSON file to upload (required).",
+              description:
+                "Path to Infracost JSON file to upload. Optional; auto-detected from common filenames when omitted.",
             },
             apiKey: {
               type: "string",
@@ -1034,7 +1061,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               items: { type: "string" },
             },
           },
-          required: ["path"],
           additionalProperties: false,
         },
       },
