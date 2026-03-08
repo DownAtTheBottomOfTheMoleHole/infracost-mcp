@@ -1,134 +1,118 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "$schema": "https://json.schemastore.org/renovate.json",
   "extends": [
     "config:recommended",
-    ":dependencyDashboard",
-    ":semanticCommits",
-    ":automergeDigest",
-    ":automergePatch",
-    ":automergeBranch",
-    "group:allNonMajor"
+    ":enableVulnerabilityAlerts",
+    ":semanticCommitTypeAll(chore)",
+    ":ignoreModulesAndTests"
   ],
-  "labels": [
-    "dependencies"
-  ],
-  "assignees": [
-    "DownAtTheBottomOfTheMoleHole"
-  ],
-  "schedule": [
-    "before 6am on Monday"
-  ],
+  "description": "Renovate configuration for Infracost MCP Server",
   "timezone": "UTC",
+  "automerge": false,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "minimumReleaseAge": "1 day",
+  "internalChecksFilter": "flexible",
   "packageRules": [
     {
-      "description": "Group all non-major updates together",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch"
-    },
-    {
-      "description": "Automerge non-major updates",
-      "matchUpdateTypes": [
-        "minor",
-        "patch",
-        "digest"
-      ],
-      "automerge": true
-    },
-    {
-      "description": "Pin GitHub Actions to SHA",
-      "matchManagers": [
-        "github-actions"
-      ],
-      "pinDigests": true
-    },
-    {
-      "description": "Group GitHub Actions updates",
-      "matchManagers": [
-        "github-actions"
-      ],
-      "groupName": "GitHub Actions",
-      "automerge": true
-    },
-    {
-      "description": "TypeScript ecosystem - major updates require review",
-      "matchPackageNames": [
-        "typescript",
-        "@typescript-eslint/eslint-plugin",
-        "@typescript-eslint/parser"
-      ],
+      "description": "Label updates by type",
       "matchUpdateTypes": [
         "major"
       ],
       "automerge": false,
       "labels": [
-        "dependencies",
-        "typescript",
         "breaking-change"
-      ]
+      ],
+      "assignees": [
+        "@downatthebottomofthemolehole"
+      ],
+      "semanticCommitType": "chore",
+      "additionalBranchPrefix": "{{semanticCommitType}}-",
+      "commitMessageSuffix": " +semver: major"
     },
     {
-      "description": "MCP SDK - major updates require review",
-      "matchPackageNames": [
-        "@modelcontextprotocol/sdk"
-      ],
       "matchUpdateTypes": [
-        "major"
+        "minor"
       ],
-      "automerge": false,
       "labels": [
-        "dependencies",
-        "mcp-sdk",
-        "breaking-change"
-      ]
+        "feature"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "semanticCommitType": "chore",
+      "commitMessageSuffix": " +semver: minor"
     },
     {
-      "description": "Node.js version updates",
+      "matchUpdateTypes": [
+        "patch",
+        "digest"
+      ],
+      "labels": [
+        "maintenance"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash",
+      "semanticCommitType": "chore",
+      "commitMessageSuffix": " +semver: patch"
+    },
+    {
+      "groupName": "Node.js & Core Dependencies",
+      "matchDatasources": [
+        "npm"
+      ],
       "matchPackageNames": [
-        "node",
+        "@modelcontextprotocol/**",
+        "typescript",
+        "tsx",
         "@types/node"
       ],
-      "matchUpdateTypes": [
-        "major"
-      ],
       "automerge": false,
-      "labels": [
-        "dependencies",
-        "nodejs",
-        "breaking-change"
+      "schedule": [
+        "after 10pm on Sunday",
+        "after 10pm on Wednesday"
       ]
     },
     {
-      "description": "DevDependencies can be more aggressive with updates",
+      "groupName": "GitHub Actions",
+      "matchDatasources": [
+        "github-tags"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "automergeStrategy": "squash"
+    },
+    {
+      "groupName": "DevDependencies",
       "matchDepTypes": [
         "devDependencies"
       ],
-      "matchUpdateTypes": [
-        "patch",
-        "minor"
-      ],
-      "automerge": true,
-      "automergeType": "pr"
+      "automerge": false,
+      "schedule": [
+        "after 10pm on Sunday",
+        "after 10pm on Wednesday"
+      ]
     }
   ],
+  "postUpdateOptions": [
+    "npmDedupe",
+    "yarnDedupeHighest"
+  ],
+  "npm": {
+    "rangeStrategy": "bump"
+  },
   "vulnerabilityAlerts": {
+    "assignees": [
+      "@downatthebottomofthemolehole"
+    ],
     "labels": [
       "security"
     ],
-    "assignees": [
-      "@DownAtTheBottomOfTheMoleHole"
-    ]
+    "automerge": false
   },
-  "npm": {
-    "minimumReleaseAge": "3 days"
-  },
-  "prConcurrentLimit": 5,
-  "prHourlyLimit": 2,
-  "stabilityDays": 3,
-  "commitMessagePrefix": "chore(deps):"
+  "prCreation": "immediate",
+  "prConcurrentLimit": 3,
+  "semanticCommits": "enabled",
+  "semanticCommitScope": "deps"
 }

@@ -1,12 +1,31 @@
 node_modules/
 dist/
-coverage/
-.env
-.DS_Store
 *.log
+.DS_Store
 
-# Local development files (not for public repo)
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE & editor
+.idea/
+.vscode/settings.json
+.vscode/*.log
+*.swp
+*.swo
+*~
+
+# Internal documentation (not for public distribution)
 .copilot-instructions.md
 .github/copilot-instructions.md
 *.instructions.md
-.vscode/settings.json
+
+# Test artifacts
+coverage/
+.nyc_output/
+src/.test-reports/
+
+# Temporary files
+.tmp*
+*.tmp

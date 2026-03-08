@@ -1,15 +1,132 @@
 {
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
   "version": "0.2",
-  "language": "en",
-  "words": [
-    "infracost",
-    "finops",
-    "CloudFormation",
-    "Bitbucket",
-    "GitLab"
+  "language": "en-GB",
+  "dictionaries": [
+    "typescript",
+    "node",
+    "npm",
+    "softwareTerms"
   ],
   "ignorePaths": [
-    "dist",
-    "node_modules"
+    "node_modules/**",
+    "dist/**",
+    "coverage/**",
+    ".git/**",
+    ".vscode/**",
+    "package-lock.json",
+    "*.log",
+    "*.min.js"
+  ],
+  "words": [
+    "APIM",
+    "azqr",
+    "Bicep",
+    "Bitbucket",
+    "BUILDPLATFORM",
+    "CACHEBUST",
+    "camelCase",
+    "ci",
+    "cimg",
+    "circleci",
+    "CloudFormation",
+    "codebase",
+    "Colima",
+    "Copilot",
+    "copyable",
+    "cspell",
+    "cupcake",
+    "Dawson",
+    "devcontainer",
+    "DOCKERVERSION",
+    "dotnet",
+    "dotnetweb",
+    "downatthebottomofthemolehole",
+    "eslintrc",
+    "finops",
+    "formatters",
+    "GitLab",
+    "GitVersion",
+    "heredoc",
+    "htaccess",
+    "infracost",
+    "jsonc",
+    "kubeconfig",
+    "kusto",
+    "linter",
+    "linters",
+    "linting",
+    "markdownlint",
+    "markdownlintrc",
+    "mcp",
+    "mcpName",
+    "mkdir",
+    "modelcontextprotocol",
+    "npx",
+    "PascalCase",
+    "pr",
+    "promisified",
+    "prs",
+    "pwsh",
+    "repos",
+    "sarif",
+    "semver",
+    "stdio",
+    "stdioServerTransport",
+    "TARGETARCH",
+    "TARGETPLATFORM",
+    "TARGETVARIANT",
+    "tsconfig",
+    "tsx",
+    "untracked",
+    "venv",
+    "vitest",
+    "workingDirectory",
+    "writeFile",
+    "yamllint"
+  ],
+  "flagWords": [],
+  "overrides": [
+    {
+      "filename": "**/*.{yml,yaml}",
+      "words": [
+        "BUILDPLATFORM",
+        "CACHEBUST",
+        "DOCKERVERSION",
+        "TARGETARCH",
+        "TARGETPLATFORM",
+        "TARGETVARIANT"
+      ]
+    },
+    {
+      "filename": "**/package.json",
+      "words": [
+        "semver"
+      ]
+    },
+    {
+      "filename": "**/.github/**",
+      "words": [
+        "CODEOWNERS",
+        "automerge",
+        "github",
+        "OIDC",
+        "permissions",
+        "provenance",
+        "renovatebot",
+        "sarif",
+        "workflows"
+      ]
+    },
+    {
+      "filename": "**/docs/**/*.md",
+      "words": [
+        "Changelog",
+        "docstring",
+        "runbook",
+        "troubleshoot",
+        "troubleshooting"
+      ]
+    }
   ]
 }
