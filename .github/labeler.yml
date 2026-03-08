@@ -2,10 +2,6 @@
 # Labels PRs based on file paths and patterns
 
 breaking-change:
-  - changed-files:
-      - any-glob-to-any-file:
-          - 'src/**'
-          - '.github/workflows/**'
   - head-branch:
       - pattern: '.*breaking.*'
   - title:
