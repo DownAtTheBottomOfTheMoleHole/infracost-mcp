@@ -9,6 +9,7 @@ changelog:
         - feature
         - enhancement
         - feat
+        - performance
     - title: ":bug: Bug Fixes"
       labels:
         - bug
@@ -36,6 +37,8 @@ changelog:
       labels:
         - maintenance
         - chore
+        - style
+        - refactor
 
 exclude:
   labels:
