@@ -34,12 +34,6 @@ test:
           - '**/*.spec.ts'
           - 'vitest.config.ts'
 
-typescript:
-  - changed-files:
-      - any-glob-to-any-file:
-          - 'src/**/*.ts'
-          - 'tsconfig.json'
-
 configuration:
   - changed-files:
       - any-glob-to-any-file:
