@@ -34,21 +34,6 @@ test:
           - '**/*.spec.ts'
           - 'vitest.config.ts'
 
-configuration:
-  - changed-files:
-      - any-glob-to-any-file:
-          - '.eslintrc.json'
-          - '.markdownlint*.json'
-          - 'cspell.json'
-          - '.mega-linter.yml'
-          - '.pre-commit-config.yaml'
-          - 'renovate.json'
-          - 'package.json'
-          - 'package-lock.json'
-          - 'vitest.config.ts'
-          - 'tsconfig.json'
-          - 'GitVersion.yml'
-
 ci:
   - changed-files:
       - any-glob-to-any-file:
