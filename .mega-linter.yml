@@ -36,6 +36,9 @@ SPELL_CSPELL_FILE_EXTENSIONS:
 
 SPELL_CSPELL_DISABLE_ERRORS: true
 
+# Link checker - ignore dynamic URLs with shell variables and npm package checks
+SPELL_LYCHEE_ARGUMENTS: "--exclude https://github.com/modelcontextprotocol/registry/releases/latest/download --exclude https://www.npmjs.com/package"
+
 # Files to exclude from all linters
 EXCLUDED_DIRECTORIES:
   - node_modules
