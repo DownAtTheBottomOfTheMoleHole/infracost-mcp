@@ -15,6 +15,7 @@ changelog:
         - bug
         - bugfix
         - fix
+        - security
     - title: ":technologist: Developer Experience"
       labels:
         - ci
