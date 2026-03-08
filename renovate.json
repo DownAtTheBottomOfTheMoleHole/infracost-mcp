@@ -103,18 +103,6 @@
       ]
     },
     {
-      "description": "Label security vulnerabilities",
-      "matchDatasources": [
-        "npm"
-      ],
-      "matchUpdateTypes": [
-        "bump"
-      ],
-      "labels": [
-        "dependencies"
-      ]
-    },
-    {
       "description": "Label dependencies by source",
       "matchDatasources": [
         "npm"
