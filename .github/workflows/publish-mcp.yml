@@ -6,6 +6,9 @@ on:
       - main
     tags:
       - "[vV]*"
+  pull_request:
+  schedule:
+    - cron: "0 0 * * 0"
   workflow_dispatch:
     inputs:
       version:
@@ -23,8 +26,42 @@ permissions:
   id-token: write
 
 jobs:
+  megalinter:
+    if: github.event_name == 'pull_request' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    name: MegaLinter Security & Quality Scan
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      statuses: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: MegaLinter
+        uses: oxsecurity/megalinter@v8
+        id: ml
+        env:
+          VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'schedule' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Archive production artifacts
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: MegaLinter reports
+          include-hidden-files: true
+          path: |
+            megalinter-reports
+            mega-linter.log
+
   version-and-tag:
-    if: github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]' && (github.event_name != 'workflow_dispatch' || inputs.version == '') && (github.event_name != 'push' || contains(github.event.head_commit.message, 'Merge pull request'))
+    if: github.event_name != 'pull_request' && github.event_name != 'schedule' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]' && (github.event_name != 'workflow_dispatch' || inputs.version == '') && (github.event_name != 'push' || contains(github.event.head_commit.message, 'Merge pull request'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -121,7 +158,9 @@ jobs:
   test-and-build:
     needs: version-and-tag
     if: |
-      always() && (
+      always() &&
+      github.event_name != 'pull_request' &&
+      github.event_name != 'schedule' && (
         (startsWith(github.ref, 'refs/tags/') && github.actor != 'github-actions[bot]') ||
         inputs.version != '' ||
         needs.version-and-tag.outputs.should_release == 'true'
