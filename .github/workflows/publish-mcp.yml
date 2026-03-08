@@ -44,7 +44,7 @@ jobs:
           fetch-depth: 0
 
       - name: MegaLinter
-        uses: oxsecurity/megalinter@v8
+        uses: oxsecurity/megalinter@e08c2b05e3dbc40af4c23f41172ef1e068a7d651 # v8
         id: ml
         env:
           VALIDATE_ALL_CODEBASE: ${{ github.event_name == 'schedule' }}
@@ -52,7 +52,7 @@ jobs:
 
       - name: Archive production artifacts
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: MegaLinter reports
           include-hidden-files: true
@@ -334,7 +334,7 @@ jobs:
           echo "value=$PREVIOUS_TAG" >> "$GITHUB_OUTPUT"
 
       - name: Generate rich public release notes
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         env:
           VERSION: ${{ steps.release_version.outputs.value }}
           PREVIOUS_TAG: ${{ steps.previous_tag.outputs.value }}
@@ -392,7 +392,7 @@ jobs:
             fs.writeFileSync('release-notes.md', body, 'utf8');
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2.5.0
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: v${{ steps.release_version.outputs.value }}
           name: v${{ steps.release_version.outputs.value }}
