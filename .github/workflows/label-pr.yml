@@ -8,7 +8,6 @@ permissions:
   contents: read
   pull-requests: write
   issues: write
-  issues: write
 
 jobs:
   label:
@@ -42,7 +41,7 @@ jobs:
                 docs: 'documentation',
                 style: 'style',
                 refactor: 'refactor',
-                test: 'tests',
+                test: 'test',
                 chore: 'maintenance'
               };
 
