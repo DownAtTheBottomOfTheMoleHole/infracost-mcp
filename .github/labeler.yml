@@ -6,10 +6,10 @@ breaking-change:
       - any-glob-to-any-file:
           - 'src/**'
           - '.github/workflows/**'
-      - head-branch:
-          - pattern: '.*breaking.*'
-      - title:
-          - pattern: '.*!:.*'
+  - head-branch:
+      - pattern: '.*breaking.*'
+  - title:
+      - pattern: '.*!:.*'
 
 feature:
   - title:
