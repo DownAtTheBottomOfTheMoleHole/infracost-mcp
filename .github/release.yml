@@ -9,11 +9,13 @@ changelog:
         - feature
         - enhancement
         - feat
+        - performance
     - title: ":bug: Bug Fixes"
       labels:
         - bug
         - bugfix
         - fix
+        - security
     - title: ":technologist: Developer Experience"
       labels:
         - ci
@@ -36,6 +38,8 @@ changelog:
       labels:
         - maintenance
         - chore
+        - style
+        - refactor
 
 exclude:
   labels:

@@ -1,0 +1,65 @@
+name: Label PRs
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    name: Labeler
+
+    steps:
+      - name: Label PR by files and patterns
+        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5
+        with:
+          configuration-path: .github/labeler.yml
+
+      - name: Label by conventional commit
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const title = context.payload.pull_request.title;
+            const labels = [];
+
+            // Parse conventional commit types (type[optional scope][!]: ...)
+            const conventionalCommitMatch = title.match(/^(feat|fix|perf|docs|style|refactor|test|chore)(\(.+\))?(!)?:/);
+
+            if (conventionalCommitMatch) {
+              const type = conventionalCommitMatch[1];
+              const isBreakingChange = !!conventionalCommitMatch[3];
+
+              const typeToLabel = {
+                feat: 'feature',
+                fix: 'bugfix',
+                perf: 'maintenance',
+                docs: 'documentation',
+                style: 'style',
+                refactor: 'refactor',
+                test: 'test',
+                chore: 'maintenance'
+              };
+
+              const label = typeToLabel[type];
+              if (label) {
+                labels.push(label);
+              }
+
+              if (isBreakingChange) {
+                labels.push('breaking-change');
+              }
+            }
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                labels: labels
+              });
+            }
