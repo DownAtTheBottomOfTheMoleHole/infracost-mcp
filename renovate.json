@@ -93,8 +93,7 @@
         "devDependencies"
       ],
       "labels": [
-        "dependencies",
-        "devDependencies"
+        "dependencies"
       ],
       "automerge": false,
       "schedule": [
