@@ -108,6 +108,7 @@
         "npm"
       ],
       "labels": [
+        "dependencies",
         "npm"
       ]
     }
