@@ -1,5 +1,6 @@
-# GitHub PR Labeler Configuration
-# Labels PRs based on file paths and patterns
+# yaml-language-server: $schema=https://www.schemastore.org/pull-request-labeler-5.json
+# Labels PRs based on file paths, branch names, and title patterns
+# Mapped to release.yml changelog categories
 
 breaking-change:
   - head-branch:
@@ -12,8 +13,12 @@ feature:
       - pattern: '^feat(\(.+\))?:'
   - head-branch:
       - pattern: "feature/.*"
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/**/*.ts"
+          - "!src/**/*.test.ts"
 
-bugfix:
+bug:
   - title:
       - pattern: '^fix(\(.+\))?:'
   - head-branch:
@@ -22,8 +27,8 @@ bugfix:
 documentation:
   - changed-files:
       - any-glob-to-any-file:
+          - "**/*.md"
           - "docs/**"
-          - "*.md"
           - ".github/ISSUE_TEMPLATE/**"
           - ".github/pull_request_template.md"
 
@@ -39,3 +44,18 @@ ci:
       - any-glob-to-any-file:
           - ".github/workflows/**"
           - ".github/labeler.yml"
+          - ".mega-linter.yml"
+
+maintenance:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "package.json"
+          - "package-lock.json"
+          - "tsconfig*.json"
+          - ".eslintrc.json"
+          - ".prettier*"
+          - ".gitignore"
+          - ".gitattributes"
+          - "renovate.json"
+          - "cspell.json"
+          - "GitVersion.yml"
