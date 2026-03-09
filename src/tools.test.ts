@@ -70,7 +70,7 @@ describe("MCP Tool Integration Tests", () => {
 
     it("should handle format parameter", async () => {
       const mockSpawn = vi.mocked(spawn);
-      mockSpawn.mockReturnValue(createMockChild('{"version": "0.2"}'));
+      mockSpawn.mockReturnValue(createMockChild("{\"version\": \"0.2\"}"));
 
       // Would test with args: { format: "json" }
       expect(mockSpawn).toBeDefined();
