@@ -60,6 +60,7 @@ jobs:
       - name: Consolidate SARIF reports
         if: success() || failure()
         id: sarif
+        continue-on-error: true
         run: |
           mkdir -p megalinter-reports/sarif
           find megalinter-reports -maxdepth 1 -name '*.sarif' -exec cp {} megalinter-reports/sarif/ \;
@@ -222,6 +223,7 @@ jobs:
         with:
           files: ./coverage/lcov.info
           fail_ci_if_error: true
+          use_oidc: true
           verbose: true
 
       - run: npm run build

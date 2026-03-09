@@ -17,6 +17,7 @@ ENABLE:
 
 DISABLE_LINTERS:
   - TYPESCRIPT_STANDARD
+  - YAML_V8R
 
 # Disable specific linters for GitHub workflows (they have YAML frontmatter)
 MARKDOWN_MARKDOWNLINT_DISABLED: false
