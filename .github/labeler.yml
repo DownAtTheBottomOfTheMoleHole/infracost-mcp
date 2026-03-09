@@ -40,7 +40,7 @@ maintenance:
           - "package.json"
           - "package-lock.json"
           - "tsconfig*.json"
-          - ".eslintrc.json"
+          - "eslint.config.js"
           - ".prettier*"
           - ".gitignore"
           - ".gitattributes"
