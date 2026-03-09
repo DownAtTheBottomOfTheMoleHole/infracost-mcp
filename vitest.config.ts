@@ -12,6 +12,12 @@ export default defineConfig({
         "**/*.test.ts",
         "vitest.config.ts",
       ],
+          thresholds: {
+            branches: 30,
+            functions: 55,
+            lines: 40,
+            statements: 40,
+          },
     },
   },
 });
