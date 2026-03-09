@@ -36,7 +36,7 @@ jobs:
 
               const typeToLabel = {
                 feat: 'feature',
-                fix: 'bugfix',
+                fix: 'bug',
                 perf: 'maintenance',
                 docs: 'documentation',
                 style: 'style',

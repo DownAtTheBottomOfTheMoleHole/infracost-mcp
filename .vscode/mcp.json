@@ -1,9 +1,11 @@
 {
   "servers": {
-    "infracost-cost-analyzer": {
+    "infracost": {
       "type": "stdio",
       "command": "node",
-      "args": ["./dist/index.js"]
+      "args": [
+        "./dist/index.js"
+      ]
     }
   }
 }

@@ -3,7 +3,7 @@
 <!-- mcp-name: io.github.downatthebottomofthemolehole/infracost -->
 
 [![CI/Publish](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml/badge.svg)](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml)
-[![Coverage](https://codecov.io/gh/DownAtTheBottomOfTheMoleHole/infracost-mcp/branch/main/graph/badge.svg)](https://codecov.io/gh/DownAtTheBottomOfTheMoleHole/infracost-mcp)
+[![Coverage](https://codecov.io/github/DownAtTheBottomOfTheMoleHole/infracost-mcp/graph/badge.svg?branch=main)](https://codecov.io/github/DownAtTheBottomOfTheMoleHole/infracost-mcp)
 [![npm](https://img.shields.io/npm/v/@downatthebottomofthemolehole/infracost-mcp-server.svg)](https://www.npmjs.com/package/@downatthebottomofthemolehole/infracost-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D24.0.0-brightgreen)](https://nodejs.org/)
@@ -99,7 +99,7 @@ Runs `infracost output`.
 Inputs:
 
 - `workingDirectory` (string, optional): Command working directory.
-- `path` (string, required): Infracost JSON file path.
+- `path` (string, optional): Infracost JSON file path. Auto-detected when omitted.
 - `format` (string, optional): Output format. Default: `table`.
 - `fields` (string[], optional): Fields to include in output.
 - `showSkus` (boolean, optional): Include SKU details.
@@ -113,8 +113,8 @@ Runs `infracost comment`.
 Inputs:
 
 - `workingDirectory` (string, optional): Command working directory.
-- `platform` (string, optional): Platform (`github`, `gitlab`, `azure-repos`, `bitbucket`).
-- `path` (string, required): Infracost JSON file path.
+- `platform` (string, optional): Platform (`github`, `gitlab`, `azure-repos`, `bitbucket`). Default: `github`.
+- `path` (string, optional): Infracost JSON file path. Auto-detected when omitted.
 - `repo` (string, optional): Repository (`owner/repo`).
 - `pullRequest` (string, optional): Pull request number.
 - `commit` (string, optional): Commit SHA.
@@ -132,7 +132,7 @@ Runs `infracost upload`.
 Inputs:
 
 - `workingDirectory` (string, optional): Command working directory.
-- `path` (string, required): Infracost JSON file path.
+- `path` (string, optional): Infracost JSON file path. Auto-detected when omitted.
 - `timeoutSeconds` (number, optional): Timeout in seconds.
 - `extraArgs` (string[], optional): Additional CLI arguments.
 
@@ -173,16 +173,25 @@ Supported resource types: `aws_lambda_function`, `aws_instance`, `aws_db_instanc
 
 ## Prompt Cookbook
 
-Use these copy/paste prompts in Copilot Chat with `@infracost`.
+Use these minimal prompts in Copilot Chat with `@infracost`.
+CLI tools default to the current workspace root when no path is given.
+If you add a file or folder as Copilot context (`#file` or `#folder`), reference it in your prompt and the tool will target that path.
+The server auto-detects common report files (`infracost-diff.json`, `infracost-base.json`, `infracost.json`), so you usually do not need to pass `path` for `infracost_output`, `infracost_comment`, or `infracost_upload`.
+
+### Quick prompts
+
+```text
+@infracost run infracost_breakdown
+@infracost run infracost_diff
+@infracost run infracost_output
+@infracost run infracost_comment with dryRun true
+@infracost run infracost_upload
+```
 
 ### Run breakdown (`infracost_breakdown`)
 
 ```text
-@infracost run infracost_breakdown with:
-- workingDirectory: ${workspaceFolder}
-- path: .
-- format: table
-- timeoutSeconds: 600
+@infracost run infracost_breakdown
 ```
 
 Expected output: Baseline cost estimate with command output, exit code, stdout, and stderr.
@@ -190,11 +199,7 @@ Expected output: Baseline cost estimate with command output, exit code, stdout, 
 ### Run diff (`infracost_diff`)
 
 ```text
-@infracost run infracost_diff with:
-- workingDirectory: ${workspaceFolder}
-- path: .
-- format: diff
-- timeoutSeconds: 600
+@infracost run infracost_diff
 ```
 
 Expected output: Cost delta from the planned change compared to current baseline.
@@ -202,31 +207,23 @@ Expected output: Cost delta from the planned change compared to current baseline
 ### Render output (`infracost_output`)
 
 ```text
-@infracost run infracost_output with:
-- path: infracost-base.json
-- format: html
+@infracost run infracost_output with format html
 ```
 
-Expected output: Formatted output from existing Infracost JSON.
+Expected output: Formatted output from existing Infracost JSON (auto-detected when possible).
 
 ### Post PR comment (`infracost_comment`)
 
 ```text
-@infracost run infracost_comment with:
-- platform: github
-- path: infracost-diff.json
-- repo: owner/repo
-- pullRequest: 123
-- dryRun: true
+@infracost run infracost_comment with repo owner/repo and pullRequest 123 and dryRun true
 ```
 
-Expected output: Generated comment payload, or posted comment when not in dry-run mode.
+Expected output: Generated comment payload, or posted comment when not in dry-run mode. Platform defaults to `github`.
 
 ### Upload report (`infracost_upload`)
 
 ```text
-@infracost run infracost_upload with:
-- path: infracost-diff.json
+@infracost run infracost_upload
 ```
 
 Expected output: Upload confirmation for Infracost Cloud ingestion.
@@ -243,8 +240,7 @@ Expected output: Configuration update confirmation from the CLI.
 ### Authenticate (`infracost_auth`)
 
 ```text
-@infracost run infracost_auth with:
-- timeoutSeconds: 120
+@infracost run infracost_auth
 ```
 
 Expected output: Authentication flow prompt or login success details.
@@ -316,8 +312,8 @@ Reload VS Code (`Cmd+Shift+P` -> `Developer: Reload Window`) after changing MCP 
 Then query the server from Copilot Chat with `@infracost`, for example:
 
 ```text
-@infracost run infracost_breakdown for path . with format table
-@infracost run infracost_diff for path . with format diff
+@infracost run infracost_breakdown
+@infracost run infracost_diff
 ```
 
 ### Usage with Other MCP Clients
@@ -369,7 +365,7 @@ See [docs/TESTING.md](./docs/TESTING.md) for Copilot Chat scenarios, manual JSON
 Quick validation prompt in Copilot Chat:
 
 ```text
-@infracost run infracost_breakdown for path . with format table
+@infracost run infracost_breakdown
 ```
 
 ## Interactive VS Code Workflows

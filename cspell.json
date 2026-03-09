@@ -14,6 +14,7 @@
     "coverage/**",
     ".git/**",
     ".vscode/**",
+    "megalinter-reports/**",
     "package-lock.json",
     "*.log",
     "*.min.js"

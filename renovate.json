@@ -4,7 +4,8 @@
     "config:recommended",
     ":enableVulnerabilityAlerts",
     ":semanticCommitTypeAll(chore)",
-    ":ignoreModulesAndTests"
+    ":ignoreModulesAndTests",
+    "helpers:pinGitHubActionDigests"
   ],
   "description": "Renovate configuration for Infracost MCP Server",
   "timezone": "UTC",

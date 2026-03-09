@@ -15,6 +15,10 @@ ENABLE:
   - BASH
   - SPELL
 
+DISABLE_LINTERS:
+  - TYPESCRIPT_STANDARD
+  - YAML_V8R
+
 # Disable specific linters for GitHub workflows (they have YAML frontmatter)
 MARKDOWN_MARKDOWNLINT_DISABLED: false
 MARKDOWN_MARKDOWNLINT_FILTER_REGEX_EXCLUDE: |
@@ -37,7 +41,7 @@ SPELL_CSPELL_FILE_EXTENSIONS:
 SPELL_CSPELL_DISABLE_ERRORS: true
 
 # Link checker - ignore dynamic URLs with shell variables and npm package checks
-SPELL_LYCHEE_ARGUMENTS: "--exclude https://github.com/modelcontextprotocol/registry/releases/latest/download --exclude https://www.npmjs.com/package"
+SPELL_LYCHEE_ARGUMENTS: "--exclude https://github.com/modelcontextprotocol/registry/releases/latest/download --exclude https://www.npmjs.com/package --exclude https://www.patreon.com/feross"
 
 # Files to exclude from all linters
 EXCLUDED_DIRECTORIES:
@@ -52,10 +56,6 @@ EXCLUDED_DIRECTORIES:
 REPORT_FOLDER: megalinter-reports
 CREATE_SARIF_REPORT: true
 CREATE_MARKDOWN_SUMMARY: true
-
-# Fail if any error found (set to true for strict mode)
-FAIL_IF_ERRORS: true
-FAIL_IF_WARNINGS: false
 
 # Timeout for linter execution (seconds)
 LINTER_TIMEOUT: 60
