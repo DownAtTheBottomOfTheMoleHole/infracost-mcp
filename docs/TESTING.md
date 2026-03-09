@@ -4,7 +4,7 @@ This document describes repeatable tests for the Infracost MCP server.
 
 ## Dependencies for Testing
 
-- Node.js `>=24.0.0`
+- Node.js `>=24.14.0`
 - npm
 - Infracost CLI
 - Optional: Docker for container-based Infracost

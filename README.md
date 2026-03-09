@@ -6,7 +6,7 @@
 [![Coverage](https://codecov.io/github/DownAtTheBottomOfTheMoleHole/infracost-mcp/graph/badge.svg?branch=main)](https://codecov.io/github/DownAtTheBottomOfTheMoleHole/infracost-mcp)
 [![npm](https://img.shields.io/npm/v/@downatthebottomofthemolehole/infracost-mcp-server.svg)](https://www.npmjs.com/package/@downatthebottomofthemolehole/infracost-mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Node Version](https://img.shields.io/badge/node-%3E%3D24.0.0-brightgreen)](https://nodejs.org/)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D24.14.0-brightgreen)](https://nodejs.org/)
 
 > **Note:** This is a community-maintained MCP server. It is not an official Model Context Protocol server from Infracost.
 
@@ -260,7 +260,7 @@ Expected output: Pre-filled usage file JSON with sensible defaults, plus guidanc
 
 ### System Dependencies
 
-- Node.js `>=24.0.0`
+- Node.js `>=24.14.0`
 - npm (bundled with Node.js)
 - Infracost CLI installed and available in `PATH` (or via `INFRACOST_BINARY_PATH`)
 
