@@ -92,7 +92,7 @@ async function runCommand(
   });
 }
 
-const AUTO_REPORT_PATH_CANDIDATES = [
+export const AUTO_REPORT_PATH_CANDIDATES = [
   "infracost-diff.json",
   "infracost-base.json",
   "infracost.json",
@@ -101,7 +101,7 @@ const AUTO_REPORT_PATH_CANDIDATES = [
   ".infracost/infracost.json",
 ];
 
-function resolveReportPath(
+export function resolveReportPath(
   args: ToolArgs,
   workingDirectory: string,
 ): string | undefined {
@@ -119,7 +119,7 @@ function resolveReportPath(
   return undefined;
 }
 
-function missingReportPathError(toolName: string) {
+export function missingReportPathError(toolName: string) {
   return {
     content: [
       {
@@ -350,7 +350,7 @@ async function handleDiffTool(args: ToolArgs) {
   };
 }
 
-async function handleOutputTool(args: ToolArgs) {
+export async function handleOutputTool(args: ToolArgs) {
   const infracostCmd = resolveInfracostCommand();
   const workingDirectory = path.resolve(
     readString(args, "workingDirectory") ?? process.cwd(),
@@ -427,7 +427,7 @@ async function handleOutputTool(args: ToolArgs) {
   };
 }
 
-async function handleCommentTool(args: ToolArgs) {
+export async function handleCommentTool(args: ToolArgs) {
   const infracostCmd = resolveInfracostCommand();
   const workingDirectory = path.resolve(
     readString(args, "workingDirectory") ?? process.cwd(),
@@ -534,7 +534,7 @@ async function handleCommentTool(args: ToolArgs) {
   };
 }
 
-async function handleUploadTool(args: ToolArgs) {
+export async function handleUploadTool(args: ToolArgs) {
   const infracostCmd = resolveInfracostCommand();
   const workingDirectory = path.resolve(
     readString(args, "workingDirectory") ?? process.cwd(),
