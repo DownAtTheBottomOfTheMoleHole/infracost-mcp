@@ -4,19 +4,12 @@ on:
   push:
     branches:
       - main
-    tags:
-      - "[vV]*"
   pull_request:
     branches:
       - main
   schedule:
     - cron: "0 0 * * 0"
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Version to publish (without v prefix). Required for manual runs on branches."
-        required: false
-        type: string
 
 concurrency:
   group: release-${{ github.ref }}
@@ -66,19 +59,25 @@ jobs:
 
       - name: Consolidate SARIF reports
         if: success() || failure()
+        id: sarif
         run: |
           mkdir -p megalinter-reports/sarif
           find megalinter-reports -maxdepth 1 -name '*.sarif' -exec cp {} megalinter-reports/sarif/ \;
+          if ls megalinter-reports/sarif/*.sarif >/dev/null 2>&1; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload MegaLinter SARIF
-        if: success() || failure()
+        if: (success() || failure()) && steps.sarif.outputs.found == 'true'
         continue-on-error: true
         uses: github/codeql-action/upload-sarif@0d579ffd059c29b07949a3cce3983f0780820c98 # v4
         with:
           sarif_file: megalinter-reports/sarif
 
   version-and-tag:
-    if: github.event_name != 'pull_request' && github.event_name != 'schedule' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]' && (github.event_name != 'workflow_dispatch' || inputs.version == '') && (github.event_name != 'push' || contains(github.event.head_commit.message, 'Merge pull request'))
+    if: github.event_name != 'pull_request' && github.event_name != 'schedule' && github.ref == 'refs/heads/main' && github.actor != 'github-actions[bot]' && (github.event_name != 'push' || contains(github.event.head_commit.message, 'Merge pull request'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -135,14 +134,61 @@ jobs:
           echo "ℹ️ Release skipped: ${{ steps.release_check.outputs.reason }}"
           echo "Computed version: ${{ steps.release_check.outputs.computed_version }}"
 
+      - name: Validate committed version files
+        if: steps.release_check.outputs.should_release == 'true'
+        env:
+          VERSION: ${{ steps.release_check.outputs.computed_version }}
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+
+          const expected = process.env.VERSION;
+
+          function readJson(filePath) {
+            return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          }
+
+          const mismatches = [];
+          const packageJson = readJson('package.json');
+          if (packageJson.version !== expected) {
+            mismatches.push(`package.json version is ${packageJson.version}, expected ${expected}`);
+          }
+
+          const serverJson = readJson('server.json');
+          if (serverJson.version !== expected) {
+            mismatches.push(`server.json version is ${serverJson.version}, expected ${expected}`);
+          }
+          if (Array.isArray(serverJson.packages)) {
+            for (const pkg of serverJson.packages) {
+              if (pkg.version !== expected) {
+                const packageId = [pkg.registry, pkg.name].filter(Boolean).join('/') || 'unknown';
+                mismatches.push(`server.json package ${packageId} version is ${pkg.version}, expected ${expected}`);
+              }
+            }
+          }
+
+          const mcpJson = readJson('mcp.json');
+          if (mcpJson.version !== expected) {
+            mismatches.push(`mcp.json version is ${mcpJson.version}, expected ${expected}`);
+          }
+
+          if (mismatches.length > 0) {
+            console.error('Version files must match GitVersion before release tagging.');
+            for (const mismatch of mismatches) {
+              console.error(`- ${mismatch}`);
+            }
+            process.exit(1);
+          }
+
+          console.log(`Version files match GitVersion ${expected}.`);
+          NODE
+
   test-and-build:
     needs: version-and-tag
     if: |
       always() &&
-      github.event_name != 'pull_request' &&
       github.event_name != 'schedule' && (
-        (startsWith(github.ref, 'refs/tags/') && github.actor != 'github-actions[bot]') ||
-        inputs.version != '' ||
+        github.event_name == 'pull_request' ||
         needs.version-and-tag.outputs.should_release == 'true'
       )
     runs-on: ubuntu-latest
@@ -164,11 +210,18 @@ jobs:
       - run: npm run lint
       - run: npm run test:coverage
 
+      - name: Ensure coverage report exists
+        run: |
+          if [ ! -f coverage/lcov.info ]; then
+            echo "coverage/lcov.info not found. Expected after npm run test:coverage."
+            exit 1
+          fi
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # v5
         with:
           files: ./coverage/lcov.info
-          fail_ci_if_error: false
+          fail_ci_if_error: true
           verbose: true
 
       - run: npm run build
@@ -184,11 +237,8 @@ jobs:
       - test-and-build
     if: |
       always() &&
-      needs.test-and-build.result == 'success' && (
-        (startsWith(github.ref, 'refs/tags/') && github.actor != 'github-actions[bot]') ||
-        inputs.version != '' ||
-        needs.version-and-tag.outputs.should_release == 'true'
-      )
+      needs.test-and-build.result == 'success' &&
+      needs.version-and-tag.outputs.should_release == 'true'
     runs-on: ubuntu-latest
     name: Publish to npm and MCP Registry
     permissions:
@@ -210,18 +260,10 @@ jobs:
       - name: Resolve release version
         id: release_version
         run: |
-          VERSION="${{ inputs.version }}"
-
-          if [[ -z "$VERSION" && "$GITHUB_REF_TYPE" == "tag" ]]; then
-            VERSION="${GITHUB_REF_NAME#v}"
-          fi
-
-          if [[ -z "$VERSION" && "${{ needs.version-and-tag.outputs.should_release }}" == "true" ]]; then
-            VERSION="${{ needs.version-and-tag.outputs.computed_version }}"
-          fi
+          VERSION="${{ needs.version-and-tag.outputs.computed_version }}"
 
           if [[ -z "$VERSION" ]]; then
-            echo "::error::Unable to resolve release version from inputs, tag, or version-and-tag output."
+            echo "::error::Unable to resolve release version from GitVersion output."
             exit 1
           fi
 
@@ -231,14 +273,6 @@ jobs:
           fi
 
           echo "value=$VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Sync version files
-        env:
-          VERSION: ${{ steps.release_version.outputs.value }}
-        run: |
-          npm version "$VERSION" --no-git-tag-version --allow-same-version
-          node -e "const fs = require('fs'); const p = 'server.json'; const data = JSON.parse(fs.readFileSync(p, 'utf8')); data.version = process.env.VERSION; if (Array.isArray(data.packages)) { data.packages = data.packages.map((pkg) => ({ ...pkg, version: process.env.VERSION })); } fs.writeFileSync(p, JSON.stringify(data, null, 2) + '\n');"
-          node -e "const fs = require('fs'); const p = 'mcp.json'; const data = JSON.parse(fs.readFileSync(p, 'utf8')); data.version = process.env.VERSION; fs.writeFileSync(p, JSON.stringify(data, null, 2) + '\n');"
 
       - run: npm ci
       - run: npm run build

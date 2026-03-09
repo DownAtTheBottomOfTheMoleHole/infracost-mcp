@@ -126,7 +126,7 @@ function missingReportPathError(toolName: string) {
         type: "text",
         text:
           `Error: no Infracost JSON report found for ${toolName}. ` +
-          "Pass 'path', or generate a report first using infracost_breakdown or infracost_diff.",
+          "Pass 'path', or run infracost_breakdown/infracost_diff with extraArgs ['--format', 'json', '--out-file', '<file>'] first.",
       },
     ],
     isError: true,
