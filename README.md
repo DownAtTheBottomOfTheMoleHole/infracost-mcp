@@ -174,8 +174,9 @@ Supported resource types: `aws_lambda_function`, `aws_instance`, `aws_db_instanc
 ## Prompt Cookbook
 
 Use these minimal prompts in Copilot Chat with `@infracost`.
-
-The server now auto-detects common report files (`infracost-diff.json`, `infracost-base.json`, `infracost.json`), so you usually do not need to pass `path` for `infracost_output`, `infracost_comment`, or `infracost_upload`.
+CLI tools default to the current workspace root when no path is given.
+If you add a file or folder as Copilot context (`#file` or `#folder`), reference it in your prompt and the tool will target that path.
+The server auto-detects common report files (`infracost-diff.json`, `infracost-base.json`, `infracost.json`), so you usually do not need to pass `path` for `infracost_output`, `infracost_comment`, or `infracost_upload`.
 
 ### Quick prompts
 
@@ -190,7 +191,7 @@ The server now auto-detects common report files (`infracost-diff.json`, `infraco
 ### Run breakdown (`infracost_breakdown`)
 
 ```text
-@infracost run infracost_breakdown with path .
+@infracost run infracost_breakdown
 ```
 
 Expected output: Baseline cost estimate with command output, exit code, stdout, and stderr.
@@ -198,7 +199,7 @@ Expected output: Baseline cost estimate with command output, exit code, stdout, 
 ### Run diff (`infracost_diff`)
 
 ```text
-@infracost run infracost_diff with path .
+@infracost run infracost_diff
 ```
 
 Expected output: Cost delta from the planned change compared to current baseline.
@@ -311,8 +312,8 @@ Reload VS Code (`Cmd+Shift+P` -> `Developer: Reload Window`) after changing MCP 
 Then query the server from Copilot Chat with `@infracost`, for example:
 
 ```text
-@infracost run infracost_breakdown for path . with format table
-@infracost run infracost_diff for path . with format diff
+@infracost run infracost_breakdown
+@infracost run infracost_diff
 ```
 
 ### Usage with Other MCP Clients
@@ -364,7 +365,7 @@ See [docs/TESTING.md](./docs/TESTING.md) for Copilot Chat scenarios, manual JSON
 Quick validation prompt in Copilot Chat:
 
 ```text
-@infracost run infracost_breakdown for path . with format table
+@infracost run infracost_breakdown
 ```
 
 ## Interactive VS Code Workflows
