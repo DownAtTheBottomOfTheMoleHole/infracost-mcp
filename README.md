@@ -1,5 +1,9 @@
 # Infracost MCP Server
 
+![Down At The Bottom Of The Mole Hole banner](.assets/org-banner.png)
+
+![Down At The Bottom Of The Mole Hole icon](.assets/org-logo.png)
+
 <!-- mcp-name: io.github.downatthebottomofthemolehole/infracost -->
 
 [![CI/Publish](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml/badge.svg)](https://github.com/DownAtTheBottomOfTheMoleHole/infracost-mcp/actions/workflows/publish-mcp.yml)
