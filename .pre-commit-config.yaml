@@ -51,7 +51,7 @@ repos:
 
 # Global settings
 default_language_version:
-  node: 24.14.0
+  node: 24.15.0
 
 ci:
   autofix_commit_msg: "chore: auto-format with pre-commit"
