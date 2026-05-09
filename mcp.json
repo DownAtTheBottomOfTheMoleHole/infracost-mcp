@@ -54,5 +54,5 @@
       "description": "Generate Infracost usage file with sensible defaults for resource types"
     }
   ],
-  "nodejs": ">=24.14.0"
+  "nodejs": ">=24.15.0"
 }
