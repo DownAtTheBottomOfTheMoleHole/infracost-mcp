@@ -1,6 +1,6 @@
 # Infracost MCP Server
 
-![Down At The Bottom Of The Mole Hole banner](.assets/org-banner.png)
+[![Down At The Bottom Of The Mole Hole banner](https://raw.githubusercontent.com/DownAtTheBottomOfTheMoleHole/.github/main/assets/banners/repositories/infracost-mcp.png)](https://github.com/DownAtTheBottomOfTheMoleHole)
 
 <!-- mcp-name: io.github.downatthebottomofthemolehole/infracost -->
 
