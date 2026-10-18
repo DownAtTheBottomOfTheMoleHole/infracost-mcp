@@ -54,12 +54,13 @@
   "devDependencies": {
   "@eslint/js": "^10.0.1",
     "@types/node": "25.9.9",
-    "@vitest/coverage-v8": "^4.1.12",
+    "@typescript/native": "npm:typescript@^7.0.2",
+    "@vitest/coverage-v8": "^5.0.5",
     "eslint": "10.13.0",
     "tsx": "4.23.15",
-    "typescript": "7.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-eslint": "^8.71.2",
-    "vitest": "4.1.12"
+    "vitest": "5.0.5"
   },
   "license": "MIT"
 }
