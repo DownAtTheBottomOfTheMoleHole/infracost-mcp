@@ -1,6 +1,6 @@
 {
   "name": "@downatthebottomofthemolehole/infracost-mcp-server",
-  "version": "0.1.0",
+  "version": "1.0.2",
   "mcpName": "io.github.DownAtTheBottomOfTheMoleHole/infracost",
   "description": "MCP server for Infracost CLI integration - cloud cost estimates for Infrastructure as Code",
   "type": "module",

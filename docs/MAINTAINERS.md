@@ -48,14 +48,11 @@ Current behaviour:
 
 ## GitVersion Strategy
 
-`GitVersion.yml` uses GitHub Flow with automatic semantic versioning:
+`GitVersion.yml` uses GitHub Flow in `ManualDeployment` mode: the version is the latest tag plus a patch bump, so it stays stable between releases.
 
-- Commits with `+semver: breaking` or `+semver: major` bump major version
-- Commits with `+semver: feature` or `+semver: minor` bump minor version
-- Commits with `+semver: fix` or `+semver: patch` bump patch version
-- Commits with `+semver: none` or `+semver: skip` skip version bumps
-
-For normal operation, use conventional commit messages with semver tags when version bumps are needed.
+- Commit-message `+semver:` major/minor triggers are disabled (Renovate's `+semver: major` messages previously inflated the version). To release a major/minor, set `next-version` in `GitVersion.yml`.
+- `+semver: fix`/`patch` and `+semver: none`/`skip` messages are still honoured.
+- Before merging, update `package.json`, `package-lock.json`, `server.json` and `mcp.json` to the version `gitversion` reports.
 
 ## Local Maintainer Checks
 
