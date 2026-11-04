@@ -220,9 +220,10 @@ jobs:
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7
+        continue-on-error: true
         with:
           files: ./coverage/lcov.info
-          fail_ci_if_error: ${{ github.event_name != 'pull_request' }}
+          fail_ci_if_error: true
           use_oidc: true
           verbose: true
 

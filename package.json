@@ -1,6 +1,6 @@
 {
   "name": "@downatthebottomofthemolehole/infracost-mcp-server",
-  "version": "0.1.0",
+  "version": "1.0.2",
   "mcpName": "io.github.DownAtTheBottomOfTheMoleHole/infracost",
   "description": "MCP server for Infracost CLI integration - cloud cost estimates for Infrastructure as Code",
   "type": "module",
@@ -46,7 +46,7 @@
     "docs:links": "npx --yes markdown-link-check -c .markdown-link-check.json README.md docs/*.md"
   },
   "engines": {
-    "node": ">=26.13.0"
+    "node": ">=24.14.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1"

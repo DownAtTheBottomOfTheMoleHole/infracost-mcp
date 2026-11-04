@@ -1,7 +1,7 @@
 {
   "name": "infracost",
   "registry_name": "DownAtTheBottomOfTheMoleHole/infracost-mcp",
-  "version": "0.1.0",
+  "version": "1.0.2",
   "description": "MCP server for Infracost CLI integration",
   "author": "Carl Dawson",
   "license": "MIT",
